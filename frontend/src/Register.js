@@ -3,6 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
+
 //function call starts from here
 function Register() {
   const [cookies] = useCookies(["cookie-name"]); //usecookies and useNavigate are hooks
@@ -18,30 +19,21 @@ function Register() {
     toast.error(error, {
       position: "bottom-right",
     });
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const { data } = await axios.post(
-        "http://localhost:5000/register",
-        {
-          ...values,
-        },
-        { withCredentials: true }
-      );
-      if (data) {
-        if (data.errors) {
-          const { firstName, lastName ,email, password } = data.errors;
-          if (firstName) generateError(firstName);
-          else if (lastName) generateError(lastName);
-          else if (email) generateError(email);
-          else if (password) generateError(password);
-        } else {
-          navigate("/");
-        }
-      }
-    } catch (ex) {
-      console.log(ex);
-    }
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    axios.post("http://localhost:5000/authenticate/register",values,{ headers: {
+      'Content-Type' : 'application/json; charset=UTF-8',
+      'Accept': 'Token',
+      "Access-Control-Allow-Origin": "*",
+
+  }})
+    .then((data)=>{
+      console.log(data.data)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+    e.target.reset();
   };
   return (
     <div className="container">
@@ -91,9 +83,7 @@ function Register() {
             }
           />
         </div>
-        <button type="submit" onClick={()=>{
-            console.log(values);
-        }}>Submit</button>
+        <button type="submit">Submit</button>
         <span>
           Already have an account ?<Link to="/login"> Login</Link>
         </span>
@@ -104,3 +94,4 @@ function Register() {
 }
 
 export default Register;
+
