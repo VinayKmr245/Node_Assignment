@@ -12,7 +12,7 @@ function Register() {
     if (cookies.jwt) {
       navigate("/");
     }
-  }, [cookies, navigate]);
+  }, [cookies, navigate]); //Use Navigate hook for redirecting
 
   const [values, setValues] = useState({ firstName:"",lastName:"",email: "", password: "" });
   const generateError = (error) =>
@@ -83,7 +83,11 @@ function Register() {
             }
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" onSubmit={()=>{
+          const {firstName,lastName,email,password}=values;
+          if(firstName ===""||lastName ===""||email ===""||password ==="")
+          generateError("error")
+        }}>Submit</button>
         <span>
           Already have an account ?<Link to="/login"> Login</Link>
         </span>

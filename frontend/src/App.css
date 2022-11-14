@@ -81,3 +81,7 @@ span a {
   font-size: 4rem;
   border-radius: 2rem;
 }
+.container{
+  display: flex;
+  background-color: blue;
+}

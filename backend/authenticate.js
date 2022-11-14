@@ -1,17 +1,26 @@
+const jwt = require('jsonwebtoken')
 
-
-const authenticate= (req,res,next) =>{
-    if(req.body.firstName == "" || req.body.lastName == "" ||req.body.email == "" || req.body.password =="")
-    {
-        res.status(405).send("Error Filling in details");
-    }
-    else if(req.body.password.length<6)
-    {
-        res.status(405).send("Password is very small");
+const authenticate= async (req,res,next) =>{
+    console.log("iam in authentiacate");
+    
+    const header=req.headers['authorization'];
+    if(header==null){
+        res.sendStatus(401)
     }
     else{
-    next();
+        const token = header.split(' ')[1];
+        jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,obj)=>{
+            if(err){
+                console.log(err)
+                res.sendStatus(403);
+            }
+            else{
+                req.usedata = obj;
+                next();
+            }
+        })
     }
+
 }
 // export default authenticate;
 module.exports=authenticate;
@@ -102,3 +111,16 @@ module.exports=authenticate;
 //     res.json({ errors, status: false });
 //   }
 // };
+// if(req.body.firstName == "" || req.body.lastName == "" ||req.body.email == "" || req.body.password =="")
+    // {
+    //     res.status(405).send("Error Filling in details");
+    // }
+    // else if(req.body.password.length<6)
+    // {
+    //     res.status(405).send("Password is very small");
+    // }
+    // else{
+    // next();
+    // }
+    
+    //Need to check whether token valid or not

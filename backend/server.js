@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const jwt = require("jsonwebtoken")
 const  {authrouter } = require("./register");
+const authenticate = require('./authenticate.js')
 // require('dotenv').config();
 
 app.use(express.json());
@@ -17,6 +18,23 @@ const url =  "mongodb+srv://project:nodejs@cluster0.9gqqmkx.mongodb.net/?retryWr
 MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
     if (err) return console.error(err)
     console.log('Connected to Database')
+})
+
+app.get("/get",authenticate,async (req,res)=>{
+    console.log("i am");
+    const client= new MongoClient(url);
+    const db = client.db('companyProfile');
+    const users = db.collection('userProfile');
+    const reader = await users.find({});
+    var array = []
+    await reader.forEach((data)=>{
+        array.push(data);
+    });
+    res.json(array);
+})
+
+app.get("/secretRoute",authenticate,(req,res)=>{
+    res.status(200).json({message:'one true user'});
 })
 
 

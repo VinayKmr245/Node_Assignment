@@ -6,13 +6,15 @@ import { ToastContainer, toast } from "react-toastify";
 
 function Login() {
   const [values, setValues] = useState({ email: "", password: "" });
-  // const generateError = (error) =>
-  //   toast.error(error, {
-  //     position: "bottom-right",
-  //   });
+  const generateError = (error) =>
+    toast.error(error, {
+      position: "top-left",
+    });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/authenticate/login",values,{ headers: {
+    //const {email,password}=values;
+    //console.log(email,password);
+    await axios.post("http://localhost:5000/authenticate/login",values,{ headers: {
       'Content-Type' : 'application/json; charset=UTF-8',
       'Accept': 'Token',
       "Access-Control-Allow-Origin": "*",
@@ -21,7 +23,7 @@ function Login() {
       console.log(data.data)
     })
     .catch((err)=>{
-      // generateError(err);
+      generateError(err);
       console.log(err)
     })
     e.target.reset();
@@ -36,8 +38,9 @@ function Login() {
             type="email"
             name="email"
             placeholder="Email"
-            onChange={(e) =>
+            onChange={(e) =>{
               setValues({ ...values, [e.target.name]: e.target.value })
+            }
             }
           />
         </div>
@@ -52,7 +55,11 @@ function Login() {
             }
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" onSubmit={()=>{
+          const {email,password}=values;
+          if(email === "" || password=== "")
+              console.log("error")
+        }}>Submit</button>
         
         <span>
           Don't have an account ?<Link to="/register"> Register </Link>
